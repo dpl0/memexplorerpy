@@ -13,27 +13,53 @@
 #		p - If one is in EM
 #		2p - If both are in EM
 # Xij = Boolean 1 if i in MB j
-
 # Data:
 #	DataStructure = {'size', 'pos'}
 #	MemoryBank = {'capacity', 'pos'}
 #	Conflict = {'cost', 'state', 'a', 'b'}
 #	X = [[]]
-
-
-##### ******* BOTAS PICUUDAS WOOOOOOOOOOO *************
-        ,---.
-       |:  ,+--.
-       |: |:  \|
-       |: |: >=|
-       |: |:  /|
-       |`.|:  _(
-       (_ |`._)``.
-        `=(_      `.________
-           `=='`------------'     hjw
-
-
+##### *************** BOTAS PICUUDAS WOOOOOOOOOOO *****************
+#        ,---.
+#       |:  ,+--.
+#       |: |:  \|
+#       |: |: >=|
+#       |: |:  /|
+#       |`.|:  _(
+#       (_ |`._)``.
+#        `=(_      `.________
+#           `=='`------------'     hjw
 #******************************************************************
+import random
+
+N = 200 # data structures
+M = 200 # mem banks
+O =  4 # conflicts
+
+u = [0]*(M+1) # u_j >  capacity used <list>
+s = [0]*(M+1) # s_i  capacity of data structure
+c = [0]*(M+1) # c_i  capacity of memory bank
+X = [[0]*(M+1)]*N # x_ij > list of lists 
+g = [[0]*(M+1)]*N # g_ij > Cost
 
 
+def randomMememex():
+	f = 0 # Total cost of allocation
+	j = 0 # Random variable
+	for i in range(1, N+1):
+		while True:
+			j = random.randint(1, M+1)
+			try:
+				if (u[j] + s[i] <= c[j]):
+					break
+			except IndexError as e:
+				print("Error! Index i, j: ", i, " ", j, " %s"%e)
+		X[i][j] = 1
+		u[j] += s[i]
+		#XXX Calculate g[i][j] (cost)
+		f += g[i][j]
+	return f
 
+
+if __name__ == '__main__':
+	print("Running!")
+	randomMememex()
