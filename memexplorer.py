@@ -17,5 +17,6 @@
 # Data:
 #	DataStructure = {'size', 'pos'}
 #	MemoryBank = {'capacity', 'pos'}
-#	Conflict
+#	Conflict = {'cost', 'state', 'a', 'b'}
+#	X = [[]]
 
