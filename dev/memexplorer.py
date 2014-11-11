@@ -29,10 +29,12 @@
 #       (_ |`._)``.
 #        `=(_      `.________
 #           `=='`------------'     hjw
-#******************************************************************
+#*****************************************************************
 
 import random
 
+# len(datastructs) >>> N
+# len(membanks) >>> M
 membanks = [30] * 4
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
@@ -44,16 +46,20 @@ cap_used = [0] * (len(membanks) + 1)
 # Bool that is true of the datastruct is in the membank
 X = [[0] * (len(membanks)  +1)] * len(datastructs)
 
+
+
 def randomMememex():
+	cost= [[0] * (len(membanks)  +1)] * len(datastructs)
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
-	for i in membanks:
+	for i in range(len(membanks)):
 		while True:
-			j = random.randint(1, M+1)
+			j = random.randint(1, len(membanks)+1)
 			if (cap_used[j] + i <= membanks[j]):
 				break
 		X[i][j] = 1
-		cap_total[j] += datastructs[i]
+		print (j , i)
+		cap_used[j] += datastructs[i]
 		#XXX Calculate cost[i][j]
 		f += cost[i][j]
 	return f
