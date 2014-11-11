@@ -13,6 +13,7 @@
 #		p - If one is in EM
 #		2p - If both are in EM
 # Xij = Boolean 1 if i in MB j
+#
 # Data:
 #	DataStructure = {'size', 'pos'}
 #	MemoryBank = {'capacity', 'pos'}
@@ -29,11 +30,12 @@
 #        `=(_      `.________
 #           `=='`------------'     hjw
 #******************************************************************
+
 import random
 
+membanks = [30] * 4
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
-capacity = [30] * 4
 penalty = 16
 conflictcost = 16
 
@@ -43,18 +45,15 @@ cap_used = [0] * (len(membanks) + 1)
 X = [[0] * (len(membanks)  +1)] * len(datastructs)
 
 def randomMememex():
-	f = 0 # Total cost of allocation
 	j = 0 # Random variable
-	lu = len(cap_used)
-	lc = len(cap_mb)
-	for i in cap_ds:
+	f = 0 # Total cost of allocation
+	for i in membanks:
 		while True:
-			#j = random.randint(1, M+1)
-			for j in range(1, membanks + 2):
-				if (cap_used[j] + i <= cap_mb[j]):
-					break
+			j = random.randint(1, M+1)
+			if (cap_used[j] + i <= membanks[j]):
+				break
 		X[i][j] = 1
-		cap_total[j] += cap_ds[i]
+		cap_total[j] += datastructs[i]
 		#XXX Calculate cost[i][j]
 		f += cost[i][j]
 	return f
