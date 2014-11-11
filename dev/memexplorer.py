@@ -31,35 +31,32 @@
 #******************************************************************
 import random
 
-N = 200 # data structures
-M = 300 # mem banks
-O =  4 # conflicts
+datastructs = 200 # data structures
+membanks = 300 # mem banks
+conflicts =  4 # conflicts
 
-u = [0]*(M+1) # u_j >  capacity used <list>
-s = [0]*(N) # s_i  capacity of data structure
-c = [0]*(M+1) # c_i  capacity of memory bank
-X = [[0]*(M+1)]*N # x_ij > list of lists 
-g = [[0]*(M+1)]*N # g_ij > Cost
+cap_used = [0] * (membanks + 1)		# u_j >  capacity used <list>
+cap_ds = [0] * datastructs			# s_i  capacity of data structure
+cap_mb = [0] * (membanks + 1)		# c_i  capacity of memory bank
+X = [[0] * (membanks  +1)] * datastructs	# x_ij > list of lists 
+cost = [[0]  *(membanks + 1)] * datastructs	# g_ij > Cost
 
 
 def randomMememex():
 	f = 0 # Total cost of allocation
 	j = 0 # Random variable
-	lu = len(u)
-	lc = len(c)
-	for i in s:
+	lu = len(cap_used)
+	lc = len(cap_mb)
+	for i in cap_ds:
 		while True:
 			#j = random.randint(1, M+1)
 			for j in range(1, M+2):
-				print "size %d %d   length: %d %d "%(i,j,lu,lc)
-				
-				if (u[j] + i <= c[j]):
-					continue
+				if (u[j] + i <= cap_mb[j]):
 					break
 		X[i][j] = 1
-		u[j] += s[i]
-		#XXX Calculate g[i][j] (cost)
-		f += g[i][j]
+		cap_total[j] += cap_ds[i]
+		#XXX Calculate cost[i][j]
+		f += cost[i][j]
 	return f
 
 
