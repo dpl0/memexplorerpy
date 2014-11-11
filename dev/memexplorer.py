@@ -33,22 +33,21 @@
 
 import random
 
-# len(datastructs) >>> N
-# len(membanks) >>> M
-membanks = [30] * 4
+# len(datastructs) = N
+# len(membanks) = M
+membanks = [30] * 4 + [0] # Last one = external mem
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
 penalty = 16
 conflictcost = 16
 
 # List that contains the capacity used for each mem bank
-cap_used = [0] * (len(membanks) + 1)
+cap_used = [0] * (len(membanks))
 # Bool that is true of the datastruct is in the membank
-X = [[0] * (len(membanks)  +1)] * len(datastructs)
+X = [[0] * len(membanks)] * len(datastructs)
 
 
 def randomMememex():
-	cost = [[0] * (len(membanks)  +1)] * len(datastructs)
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
 	for i in range(0, len(membanks)):
@@ -59,9 +58,11 @@ def randomMememex():
 		X[i][j] = 1
 		cap_used[j] += datastructs[i]
 		#XXX Calculate cost[i][j]
-		f += cost[i][j]
+		cost = 0
+		f += cost
 	return f
 
 
 if __name__ == '__main__':
-	randomMememex()
+	cost = randomMememex()
+	print(cost)
