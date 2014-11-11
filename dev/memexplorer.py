@@ -38,28 +38,35 @@ import random
 membanks = [30] * 4 + [0] # Last one = external mem
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
-penalty = 16
-conflictcost = 16
 
 # List that contains the capacity used for each mem bank
 cap_used = [0] * (len(membanks))
 # Bool that is true of the datastruct is in the membank
 X = [[0] * len(membanks)] * len(datastructs)
 
+# Conflicts
+penalty = 16
+con = [16, 16, 16, 16]
+confictstatus = [0, 1, penalty, penalty * 2]
+
 
 def randomMememex():
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
 	for i in range(0, len(membanks)):
+		cost = 0 # cost per iteration
 		while True:
 			j = random.randint(0, len(membanks)-1)
 			if (cap_used[j] + i <= membanks[j]):
 				break
 		X[i][j] = 1
 		cap_used[j] += datastructs[i]
-		#XXX Calculate cost[i][j]
-		cost = 0
+		# Calculate cost[i][j]
+		if i <= len(membanks) - 2:
+			cost = accesscost[i]
 		f += cost
+	# Calculate conflicts cost
+	# Calculate external mem cost
 	return f
 
 
