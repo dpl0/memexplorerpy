@@ -39,7 +39,7 @@ cap_used = [0] * (membanks + 1)		# u_j >  capacity used <list>
 cap_ds = [0] * datastructs			# s_i  capacity of data structure
 cap_mb = [0] * (membanks + 1)		# c_i  capacity of memory bank
 X = [[0] * (membanks  +1)] * datastructs	# x_ij > list of lists 
-cost = [[0]  *(membanks + 1)] * datastructs	# g_ij > Cost
+cost = [[0]  * (membanks + 1)] * datastructs	# g_ij > Cost
 
 
 def randomMememex():
