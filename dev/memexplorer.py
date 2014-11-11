@@ -47,18 +47,16 @@ cap_used = [0] * (len(membanks) + 1)
 X = [[0] * (len(membanks)  +1)] * len(datastructs)
 
 
-
 def randomMememex():
-	cost= [[0] * (len(membanks)  +1)] * len(datastructs)
+	cost = [[0] * (len(membanks)  +1)] * len(datastructs)
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
-	for i in range(len(membanks)):
+	for i in range(0, len(membanks)):
 		while True:
-			j = random.randint(1, len(membanks)+1)
+			j = random.randint(0, len(membanks)-1)
 			if (cap_used[j] + i <= membanks[j]):
 				break
 		X[i][j] = 1
-		print (j , i)
 		cap_used[j] += datastructs[i]
 		#XXX Calculate cost[i][j]
 		f += cost[i][j]
