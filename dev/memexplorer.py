@@ -31,16 +31,16 @@
 #******************************************************************
 import random
 
-datastructs = 200 # data structures
-membanks = 300 # mem banks
-conflicts =  4 # conflicts
+datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
+accesscost = [4] * len(datastructs)
+capacity = [30] * 4
+penalty = 16
+conflictcost = 16
 
-cap_used = [0] * (membanks + 1)		# u_j >  capacity used <list>
-cap_ds = [0] * datastructs			# s_i  capacity of data structure
-cap_mb = [0] * (membanks + 1)		# c_i  capacity of memory bank
-X = [[0] * (membanks  +1)] * datastructs	# x_ij > list of lists 
-cost = [[0]  * (membanks + 1)] * datastructs	# g_ij > Cost
-
+# List that contains the capacity used for each mem bank
+cap_used = [0] * (len(membanks) + 1)
+# Bool that is true of the datastruct is in the membank
+X = [[0] * (len(membanks)  +1)] * len(datastructs)
 
 def randomMememex():
 	f = 0 # Total cost of allocation
@@ -61,5 +61,4 @@ def randomMememex():
 
 
 if __name__ == '__main__':
-	print("Running!")
 	randomMememex()
