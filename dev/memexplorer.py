@@ -50,8 +50,8 @@ def randomMememex():
 	for i in cap_ds:
 		while True:
 			#j = random.randint(1, M+1)
-			for j in range(1, M+2):
-				if (u[j] + i <= cap_mb[j]):
+			for j in range(1, membanks + 2):
+				if (cap_used[j] + i <= cap_mb[j]):
 					break
 		X[i][j] = 1
 		cap_total[j] += cap_ds[i]
