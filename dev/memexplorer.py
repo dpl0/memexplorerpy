@@ -44,11 +44,9 @@ cap_used = [0] * (len(membanks))
 # Bool that is true of the datastruct is in the membank
 X = [[0] * len(membanks)] * len(datastructs)
 
-# Conflicts
 penalty = 16
-con = [16, 16, 16, 16]
-confictstatus = [0, 1, penalty, penalty * 2]
-
+# Conflicts: {cost, status}
+conflicts = [[16, 0], [16, 1], [16, penalty], [16, penalty * 2]]
 
 def randomMememex():
 	j = 0 # Random variable
@@ -66,7 +64,11 @@ def randomMememex():
 			cost = accesscost[i]
 		f += cost
 	# Calculate conflicts cost
+	for i in range(0, len(conflicts)-1):
+		cost += conflicts[i][0] * conflicts[i][1]
 	# Calculate external mem cost
+	for i in range(0, len(datastructs)-1):
+		cost += penalty * accesscost[i] * X[i][len(membanks)-1]
 	return f
 
 
