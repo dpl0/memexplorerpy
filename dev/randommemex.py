@@ -63,13 +63,15 @@ def randomMememex():
 		if i <= len(membanks) - 2:
 			cost = accesscost[i]
 		f += cost
+	print(cost)
 	# Calculate conflicts cost
 	for i in range(0, len(conflicts)-1):
 		cost += conflicts[i][0] * conflicts[i][1]
+	print(cost)
 	# Calculate external mem cost
 	for i in range(0, len(datastructs)-1):
 		cost += penalty * accesscost[i] * X[i][len(membanks)-1]
-	return f
+	return cost 
 
 
 if __name__ == '__main__':
