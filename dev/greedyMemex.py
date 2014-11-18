@@ -42,16 +42,26 @@
 #*****************************************************************
 
 import random
+from random import shuffle # used to permutate for A
+from sys import float_info # used to generate a very large number
+
+
 
 # len(datastructs) = N
 # len(membanks) = M
-aModels = 
 membanks = [30] * 4 + [0] # Last one = external mem
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
 
+
+
+#input
+inputA = datastructs
+shuffle(inputA)
+#print inputA
+
 # List that contains the capacity used for each mem bank
-cap_used = [0] * (len(membanks))
+cap_used = [0] * (len(membanks)) # U_j
 # Bool that is true of the datastruct is in the membank
 X = [[0] * len(membanks)] * len(datastructs)
 
@@ -60,22 +70,23 @@ penalty = 16
 con = [16, 16, 16, 16]
 confictstatus = [0, 1, penalty, penalty * 2]
 
-
 def greedyMememex():
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
-	for i in range(0, len(membanks)):
+	h = float_info.max #auxiliary variable for the partial greedy solution
+	
+	for i in range(0, len(datastructs)-1):
 		cost = 0 # cost per iteration
-		while True:
-			j = random.randint(0, len(membanks)-1)
-			if (cap_used[j] + i <= membanks[j]):
-				break
+		for j in range(0, len(membanks)):
+			#j = random.randint(0, len(membanks)-1)
+			if (cap_used[j] + inputA[i] <= membanks[j]):
+				# Calculate cost[i][j]
+				cost = accesscost[i]
+				if 
+				
 		X[i][j] = 1
 		cap_used[j] += datastructs[i]
-		# Calculate cost[i][j]
-		if i <= len(membanks) - 2:
-			cost = accesscost[i]
-		f += cost
+		f += cost + h
 	# Calculate conflicts cost
 	# Calculate external mem cost
 	return f
