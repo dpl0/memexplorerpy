@@ -19,7 +19,8 @@
 #	MemoryBank = {'capacity', 'pos'}
 #	Conflict = {'cost', 'state', 'a', 'b'}
 #	X = [[]]
-##### *************** BOTAS PICUUDAS WOOOOOOOOOOO *****************
+
+# *************** BOTAS PICUUDAS WOOOOOOOOOOO *****************
 #        ,---.
 #       |:  ,+--.
 #       |: |:  \|
@@ -29,49 +30,55 @@
 #       (_ |`._)``.
 #        `=(_      `.________
 #           `=='`------------'     hjw
-#*****************************************************************
+#**************************************************************
 
 import random
+import sys
 
 # len(datastructs) = N
 # len(membanks) = M
-membanks = [30] * 4 + [0] # Last one = external mem
-datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
-accesscost = [4] * len(datastructs)
+membanks = [80] * 4 + [sys.maxint] # Last one = external mem
+# [space, access cost]
+datastructs = [[60, 4], [40, 4],
+			   [35, 4], [25, 4],
+			   [30, 4], [40, 4],
+			   [35, 4], [45, 4],
+			   [50, 4], [60, 4]]
 
 # List that contains the capacity used for each mem bank
 cap_used = [0] * (len(membanks))
 # Bool that is true of the datastruct is in the membank
-X = [[0] * len(membanks)] * len(datastructs)
+X = [[False] * len(membanks)] * len(datastructs)
 
 penalty = 16
-# Conflicts: {cost, status}
-conflicts = [[16, 0], [16, 1], [16, penalty], [16, penalty * 2]]
+# Conflicts: {cost, conflict status}
+conflicts = [[16, 0], 
+			 [16, 1], 
+			 [16, penalty],
+			 [16, penalty * 2]]
 
 def randomMememex():
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
-	for i in range(0, len(membanks)):
-		cost = 0 # cost per iteration
+	for i in range(0, len(datastructs)):
 		while True:
 			j = random.randint(0, len(membanks)-1)
-			if (cap_used[j] + i <= membanks[j]):
+			if (cap_used[j] + datastructs[i][0] <= membanks[j]):
 				break
-		X[i][j] = 1
-		cap_used[j] += datastructs[i]
+		X[i][j] = True
+		cap_used[j] += datastructs[i][0]
 		# Calculate cost[i][j]
-		if i <= len(membanks) - 2:
-			cost = accesscost[i]
-		f += cost
-	print(cost)
+		if j <= len(membanks) - 2:
+			f += datastructs[j][1]
+		# in external mem
+		if i == len(membanks) - 1:
+			f += datastructs[j][1] * penalty
+		print(f, i, j)
+	print("Total cost so far: ", f)
 	# Calculate conflicts cost
-	for i in range(0, len(conflicts)-1):
-		cost += conflicts[i][0] * conflicts[i][1]
-	print(cost)
-	# Calculate external mem cost
-	for i in range(0, len(datastructs)-1):
-		cost += penalty * accesscost[i] * X[i][len(membanks)-1]
-	return cost 
+	for i in range(0, len(conflicts)):
+		f += conflicts[i][0] * conflicts[i][1]
+	return f 
 
 
 if __name__ == '__main__':
