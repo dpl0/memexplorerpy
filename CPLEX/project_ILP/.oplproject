@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?><project>
 	<version>1.0</version>
 	<configs>
-		<config category="opl" default="true" name="project_ILP">
-			<ref name="project_ILP.mod" type="model">
+		<config category="opl" default="true" name="Project_ILP">
+			<ref name="Project_ILP.dat" type="data">
 			</ref>
-			<ref name="project_ILP.dat" type="data">
+			<ref name="Project_ILP.mod" type="model">
 			</ref>
 		</config>
 	</configs>

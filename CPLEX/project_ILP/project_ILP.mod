@@ -27,6 +27,9 @@
  
  minimize 
  	sum(c_a in a)sum(c_b in b)(y_1[c_a][c_b]*d) + sum(c_a in a)sum(c_b in b)(y_2[c_a][c_b]*d) +sum(c_a in a)sum(c_b in b)(y_3[c_a][c_b]*d) + sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
+// 	sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
+ 		//	Le he quitado "sum(k in o)(y[k]*d)" ya que no veo sentido ponerlo
+ 		//	El costo de acceso se calcula mas bien con el resto de las sumatorias
  		
  subject to {
  	
@@ -45,12 +48,7 @@
  	  forall(c_a in a)
  	    forall(c_b in b)
  	      x[c_a][j] + x[c_b][ext] <= 1+(1/p)*y_2[c_a][c_b];
- 		    
-/*	forall(j in m)					//	(7)
-	  forall(c_a in a)
-	    forall(c_b in b)
-	      x[c_a][ext] + x[c_b][j] <= 1+(1/p)*y_2[c_a];
- */
+
  	forall(c_a in a)				//	(8)
  	  forall(c_b in b)
  	    x[c_a][ext] + x[c_b][ext] <= 1+(1/(2*p))*y_3[c_a][c_b];
@@ -85,4 +83,29 @@ execute {
 	write("] Size of DataStructure = "+s[i]+"\n");
 	
 }  
+
+writeln("\nConflicts with status 1 (same memory bank)");
+for (var a=1; a<=num_data_structures; a++) {
+	write("[\t");
+ 	for (var b=1; b<=num_data_structures; b++)
+		write(y_1[a][b]+"\t");
+	write("]\n");
+}
+
+writeln("\nConflicts with status 2 (one data structure in external memory)");
+for (var a=1; a<=num_data_structures; a++) {
+	write("[\t");
+ 	for (var b=1; b<=num_data_structures; b++)
+		write(y_2[a][b]+"\t");
+	write("]\n");
+}
+
+writeln("\nConflicts with status 3 (both data structures in external memory)");
+for (var a=1; a<=num_data_structures; a++) {
+	write("[\t");
+ 	for (var b=1; b<=num_data_structures; b++)
+		write(y_3[a][b]+"\t");
+	write("]\n");
+}    
+
 }; 
