@@ -27,9 +27,6 @@
  
  minimize 
  	sum(c_a in a)sum(c_b in b)(y_1[c_a][c_b]*d) + sum(c_a in a)sum(c_b in b)(y_2[c_a][c_b]*d) +sum(c_a in a)sum(c_b in b)(y_3[c_a][c_b]*d) + sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
-// 	sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
- 		//	Le he quitado "sum(k in o)(y[k]*d)" ya que no veo sentido ponerlo
- 		//	El costo de acceso se calcula mas bien con el resto de las sumatorias
  		
  subject to {
  	
