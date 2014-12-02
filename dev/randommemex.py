@@ -20,67 +20,37 @@
 #	Conflict = {'cost', 'state', 'a', 'b'}
 #	X = [[]]
 
-# *************** BOTAS PICUUDAS WOOOOOOOOOOO *****************
-#        ,---.
-#       |:  ,+--.
-#       |: |:  \|
-#       |: |: >=|
-#       |: |:  /|
-#       |`.|:  _(
-#       (_ |`._)``.
-#        `=(_      `.________
-#           `=='`------------'     hjw
-#**************************************************************
-
 import random
 import sys
+import memproblem
 
-# len(datastructs) = N
-# len(membanks) = M
-membanks = [80] * 4 + [sys.maxint] # Last one = external mem
-# [space, access cost]
-datastructs = [[60, 4], [40, 4],
-			   [35, 4], [25, 4],
-			   [30, 4], [40, 4],
-			   [35, 4], [45, 4],
-			   [50, 4], [60, 4]]
-
-# List that contains the capacity used for each mem bank
-cap_used = [0] * (len(membanks))
-# Bool that is true of the datastruct is in the membank
-X = [[False] * len(membanks)] * len(datastructs)
-
-penalty = 16
-# Conflicts: {cost, conflict status}
-conflicts = [[16, 0], 
-			 [16, 1], 
-			 [16, penalty],
-			 [16, penalty * 2]]
-
-def randomMememex():
+def randomMememex(p):
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
-	for i in range(0, len(datastructs)):
+	for i in range(0, p.datastructs_n):
 		while True:
-			j = random.randint(0, len(membanks)-1)
-			if (cap_used[j] + datastructs[i][0] <= membanks[j]):
+			j = random.randint(0, p.membanks_n - 1)
+			if (p.cap_used[j] + p.datastructs[i][0] <= problem.membanks[j]):
 				break
-		X[i][j] = True
-		cap_used[j] += datastructs[i][0]
+		p.X[i][j] = True
+		p.cap_used[j] += p.datastructs[i][0]
 		# Calculate cost[i][j]
-		if j <= len(membanks) - 2:
-			f += datastructs[j][1]
+		if j <= len(p.membanks) - 2:
+			f += p.datastructs[j][1]
 		# in external mem
-		if i == len(membanks) - 1:
-			f += datastructs[j][1] * penalty
+		if i == len(p.membanks) - 1:
+			f += p.datastructs[j][1] * p.penalty
 		print(f, i, j)
 	print("Total cost so far: ", f)
 	# Calculate conflicts cost
-	for i in range(0, len(conflicts)):
-		f += conflicts[i][0] * conflicts[i][1]
+	for i in range(0, conflicts_n):
+		f += p.conflicts[i][0] * p.conflicts[i][1]
 	return f 
 
 
 if __name__ == '__main__':
-	cost = randomMememex()
+	# [number, maximum]
+	# seed, datastructs, membanks, conflicts 
+	problem = MemProblem(42, [50, 50], [60, 50], [34, 3])
+	cost = randomMememex(problem)
 	print(cost)
