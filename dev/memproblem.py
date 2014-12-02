@@ -14,7 +14,7 @@ class MemProblem():
 	datastructs_maxn = 0
 	datastructs = []
 
-	# [cost, conflict status].
+	# [a, b, cost, conflict status].
 	# Status can be any of: {0, 1, penalty, 2*penalty}.
 	conflicts_max = 0
 	conflicts_n = 0
@@ -52,14 +52,12 @@ class MemProblem():
 		# Create random membanks.
 		self.membanks = [0] * self.membanks_n + [sys.maxint]
 		for i in range(0, self.membanks_n):
-			self.membanks[i] = random.randint(0, self.membanks_max)
+			self.membanks[i] = { 'capacity': random.randint(0, self.membanks_max) }
 
 		# Create random datastructs.
 		self.datastructs = [0] * self.datastructs_n
 		for i in range(0, self.datastructs_n):
-			self.datastructs[i] = [0, 0]
-			# Capacity required.
-			self.datastructs[i][0] = random.randint(0, self.datastructs_max)
+			self.datastructs[i] = { 'capacity': random.randint(0, self.datastructs_max), 'cost': random.randint(0, self.datastructs_max)] }
 			# Access cost.
 			self.datastructs[i][1] = random.randint(0, self.datastructs_max)
 
@@ -97,6 +95,14 @@ class MemProblem():
 			if X[-1][i] == True:
 				cost += penalty * datastructs[i]
 		return cost
+
+	def cost(self, i, j):
+		cost = self.datastructs[i][1] #Access cost of i
+		if j == self.membanks_n+1:
+			cost *= penalty
+
+		#Loop conflits
+
 
 #prob = MemProblem(2, [3,5], [4,10], [5,2])
 #print "Solution:"
