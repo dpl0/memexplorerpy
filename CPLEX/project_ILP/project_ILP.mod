@@ -8,28 +8,26 @@
  int num_memory_banks 		= ...;	//	number of memory banks (m+1 = external memory)
  int p						= ...;	//	penalty
  int ext					= num_memory_banks+1;
+ int conflicts				= ...;
  
  range n 		= 1..num_data_structures;
  range m 		= 1..num_memory_banks;
  range m_ext 	= 1..num_memory_banks+1;
- range a 		= 1..num_data_structures;
- range b 		= 1..num_data_structures;
+ range o		= 1..conflicts;
  
- float d 			= ...;	//	conflict cost 
+ float d [k in o]	= ...;	//	conflict costs 
  float s [i in n] 	= ...;	//	size of data structure i
  float c [j in m] 	= ...;	//	capacity of memory bank j
  float e [i in n] 	= ...;	//	access cost of data structure i
  
+ int A [k in o]		= ...;	//	first data structure in each conflict
+ int B [k in o] 	= ...;	//	second data structure in each conflict
+ 
  dvar boolean x [i in n][j in m_ext];	//	binary matrix indication data structure in memory bank j
- dvar int y_1 [k in a][l in b];			//	First status conflicts
- dvar int y_2 [k in a][l in b];			//	second status conflicts
- dvar int y_3 [k in a][l in b];			//	third status conflicts
+ dvar int y [k in o];					//	Status of the conflicts
  
  minimize 
- 	sum(c_a in a)sum(c_b in b)(y_1[c_a][c_b]*d) + sum(c_a in a)sum(c_b in b)(y_2[c_a][c_b]*d) +sum(c_a in a)sum(c_b in b)(y_3[c_a][c_b]*d) + sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
-// 	sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
- 		//	Le he quitado "sum(k in o)(y[k]*d)" ya que no veo sentido ponerlo
- 		//	El costo de acceso se calcula mas bien con el resto de las sumatorias
+ 	sum(k in o)(y[k]*d[k]) + sum(i in n)sum(j in m)e[i]*x[i][j] + p*sum(i in n)e[i]*x[i][ext];
  		
  subject to {
  	
@@ -40,26 +38,22 @@
  	  sum(i in n) x[i][j]*s[i] <= c[j];
  	   
  	forall(j in m)					//	(5)
- 	  forall(c_a in a)
- 	    forall(c_b in b)
- 	      x[c_a][j] + x[c_b][j] <= 1+y_1[c_a][c_b];
+ 	  forall (k in o)
+ 	      x[A[k]][j] + x[B[k]][j] <= 1+y[k];
  		    
  	forall(j in m)					//	(6)
- 	  forall(c_a in a)
- 	    forall(c_b in b)
- 	      x[c_a][j] + x[c_b][ext] <= 1+(1/p)*y_2[c_a][c_b];
+ 	  forall(k in o)
+ 	      x[A[k]][j] + x[B[k]][ext] <= 1+(1/p)*y[k];
+ 	      
+ 	forall(j in m)					//	(6)
+ 	  forall(k in o)
+ 	      x[A[k]][ext] + x[B[k]][j] <= 1+(1/p)*y[k];
 
- 	forall(c_a in a)				//	(8)
- 	  forall(c_b in b)
- 	    x[c_a][ext] + x[c_b][ext] <= 1+(1/(2*p))*y_3[c_a][c_b];
+ 	forall(k in o)				//	(8)
+ 	  x[A[k]][ext] + x[B[k]][ext] <= 1+(1/(2*p))*y[k];
  
- 	forall(k in a){
- 	  forall(l in b) {
- 	  	y_1[k][l]>=0;
- 	  	y_2[k][l]>=0;
- 	  	y_3[k][l]>=0;
-  } 	}  
- 		
+ 	forall(k in o)
+ 	  y[k] >= 0;
  }
  
  //	POST-PROCESSING BLOCK
@@ -84,28 +78,12 @@ execute {
 	
 }  
 
-writeln("\nConflicts with status 1 (same memory bank)");
-for (var a=1; a<=num_data_structures; a++) {
-	write("[\t");
- 	for (var b=1; b<=num_data_structures; b++)
-		write(y_1[a][b]+"\t");
-	write("]\n");
-}
+writeln("\nConflicts Costs");
+write("[\t");
+for (var k=1; k<=conflicts; k++)
+	write(y[k]+"\t");
+write("]\n");
 
-writeln("\nConflicts with status 2 (one data structure in external memory)");
-for (var a=1; a<=num_data_structures; a++) {
-	write("[\t");
- 	for (var b=1; b<=num_data_structures; b++)
-		write(y_2[a][b]+"\t");
-	write("]\n");
-}
 
-writeln("\nConflicts with status 3 (both data structures in external memory)");
-for (var a=1; a<=num_data_structures; a++) {
-	write("[\t");
- 	for (var b=1; b<=num_data_structures; b++)
-		write(y_3[a][b]+"\t");
-	write("]\n");
-}    
 
 }; 
