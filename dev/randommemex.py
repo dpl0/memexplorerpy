@@ -1,3 +1,5 @@
+#!/bin/env python2.7
+
 # N = # Data structures
 # M = # Mem Banks
 # Si = Size of DS i
@@ -28,10 +30,8 @@ def randomMememex(p):
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
 	for i in range(0, p.datastructs_n):
-		while True:
+		while p.cap_used[j] + p.datastructs[i][0] > problem.membanks[j]:
 			j = random.randint(0, p.membanks_n - 1)
-			if (p.cap_used[j] + p.datastructs[i][0] <= problem.membanks[j]):
-				break
 		p.X[i][j] = True
 		p.cap_used[j] += p.datastructs[i][0]
 		# Calculate cost[i][j]
@@ -40,13 +40,10 @@ def randomMememex(p):
 		# in external mem
 		if i == len(p.membanks) - 1:
 			f += p.datastructs[j][1] * p.penalty
-		print(f, i, j)
-	print("Total cost so far: ", f)
 	# Calculate conflicts cost
 	for i in range(0, conflicts_n):
 		f += p.conflicts[i][0] * p.conflicts[i][1]
-	return f 
-
+	return f
 
 if __name__ == '__main__':
 	# [number, maximum]
