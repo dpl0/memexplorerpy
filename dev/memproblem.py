@@ -148,7 +148,12 @@ class MemProblem():
 			f.write('{b}, '.format(b=conflict['b']))
 		f.write('{b}];\n'.format(b=self.conflicts[-1]['b']))
 
-
+	def copy(self):
+		problem = MemProblem(datastructs=list(self.datastructs), membanks=list(self.membanks[:-1]), conflicts=list(self.conflicts), penalty=self.penalty)
+		for row in range(0, len(self.X)):
+			problem.X[row] = list(self.X[row])
+		problem.update_conflicts()
+		return problem
  
 # s = [60, 40, 45, 35, 40, 50, 45, 55, 50, 40, 25, 56, 73, 53, 42, 88];
 # c = [80, 80, 80, 80];
@@ -210,21 +215,3 @@ def random_problem(seed, dss_min, dss_max, dsc_min, dsc_max, ds_n, mem_min, mem_
 		}		
 
 	return MemProblem(datastructs=datastructs, membanks=membanks, conflicts=conflicts, penalty=penalty)
-
-if __name__ == "__main__":
-	prob = random_problem(seed=2, 
-		dss_min=0, 
-		dss_max=3, 
-		dsc_min=0, 
-		dsc_max=5, 
-		ds_n=3, 
-		mem_min=0, 
-		mem_max=5, 
-		mem_n=4, 
-		c_min=0, 
-		c_max=1, 
-		c_n=8, 
-		p_min=3, 
-		p_max=4)
-
-	print prob.calculate_cost()
