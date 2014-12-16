@@ -40,13 +40,10 @@ def randomMememex(p):
 		# in external mem
 		if i == len(p.membanks) - 1:
 			f += p.datastructs[j][1] * p.penalty
-		print(f, i, j)
-	print("Total cost so far: ", f)
 	# Calculate conflicts cost
 	for i in range(0, conflicts_n):
 		f += p.conflicts[i][0] * p.conflicts[i][1]
-	return f 
-
+	return f
 
 if __name__ == '__main__':
 	# [number, maximum]
