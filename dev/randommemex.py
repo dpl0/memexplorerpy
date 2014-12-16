@@ -30,10 +30,8 @@ def randomMememex(p):
 	j = 0 # Random variable
 	f = 0 # Total cost of allocation
 	for i in range(0, p.datastructs_n):
-		while True:
+		while p.cap_used[j] + p.datastructs[i][0] > problem.membanks[j]:
 			j = random.randint(0, p.membanks_n - 1)
-			if (p.cap_used[j] + p.datastructs[i][0] <= problem.membanks[j]):
-				break
 		p.X[i][j] = True
 		p.cap_used[j] += p.datastructs[i][0]
 		# Calculate cost[i][j]
