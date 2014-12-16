@@ -1,3 +1,5 @@
+#!/bin/env python2.7
+
 # N = # Data structures
 # M = # Mem Banks
 # Si = Size of DS i
