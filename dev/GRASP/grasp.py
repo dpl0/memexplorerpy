@@ -1,2 +1,0 @@
-def construct(problem):
-	
