@@ -1,5 +1,3 @@
-#!/bin/env python2.7
-
 # N = # Data structures
 # M = # Mem Banks
 # Si = Size of DS i
@@ -48,6 +46,6 @@ def randomMememex(p):
 if __name__ == '__main__':
 	# [number, maximum]
 	# seed, datastructs, membanks, conflicts 
-	problem = MemProblem(42, [50, 50], [60, 50], [34, 3])
+	problem = memproblem.read_problem("./test.dat")
 	cost = randomMememex(problem)
 	print(cost)
