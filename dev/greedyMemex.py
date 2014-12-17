@@ -53,8 +53,6 @@ membanks = [30] * 4 + [0] # Last one = external mem
 datastructs = [10, 20, 15, 25, 30, 40, 35, 45, 50 , 60]
 accesscost = [4] * len(datastructs)
 
-
-
 #input
 inputA = datastructs
 shuffle(inputA)
@@ -81,7 +79,10 @@ def greedyMememex():
 			#j = random.randint(0, len(membanks)-1)
 			if (cap_used[j] + inputA[i] <= membanks[j]):
 				# Calculate cost[i][j]
+				# there are several types of costs
+				# depending on what where is our data structure, is the difference on what we're having as a cost, cost J.
 				cost = accesscost[i]
+				
 				if 
 				
 		X[i][j] = 1
