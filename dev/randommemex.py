@@ -9,23 +9,17 @@ import sys
 import memproblem
 
 def randomMememex(p):
-	j = 0 # Random variable
-	f = 0 # Total cost of allocation
+	cost = 0
 	for i in range(0, p.datastructs_n):
-		while p.cap_used[j] + p.datastructs[i][0] > problem.membanks[j]:
-			j = random.randint(0, p.membanks_n - 1)
+		j = 0
+		while p.cap_used[i] + p.datastructs[i]['size'] > p.membanks[j]['capacity']:
+			j = random.randint(0, p.membanks_n)
 		p.X[i][j] = True
-		p.cap_used[j] += p.datastructs[i][0]
-		# Calculate cost[i][j]
-		if j <= len(p.membanks) - 2:
-			f += p.datastructs[j][1]
-		# in external mem
-		if i == len(p.membanks) - 1:
-			f += p.datastructs[j][1] * p.penalty
-	# Calculate conflicts cost
-	for i in range(0, conflicts_n):
-		f += p.conflicts[i][0] * p.conflicts[i][1]
-	return f
+		if j <= len(p.cap_used):
+			p.cap_used[j] += p.datastructs[i]['size']
+		# Calculate cost (not for conflicts).
+		cost += p.calculate_cost()
+	return cost
 
 if __name__ == '__main__':
 	# [number, maximum]
