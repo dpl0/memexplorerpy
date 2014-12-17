@@ -37,7 +37,6 @@ class MemProblem():
 		for row in self.X:
 			print row
 
-	# XXX We still need to check it
 	def calculate_cost(self):
 		cost = 0
 		
