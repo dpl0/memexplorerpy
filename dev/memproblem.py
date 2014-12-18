@@ -75,14 +75,14 @@ class MemProblem():
 		# Ensure that each datastructure fits into its membank.
 		# Ensure that each membank is not overflowed.
 		for i in range(len(self.X)):
-			if self.X[i][j] == True:
-				ds = self.datastructs[i]['size']
-				mem = self.membanks[j]['capacity']
-				if (self.cap_used[j] -  mem) < ds:
-					return False
-				self.cap_used[j] += ds
-				if self.cap_used[j] > mem:
-					return False
+			for j in range(len(self.X[i])):
+				if self.X[i][j] == True:
+					ds = self.datastructs[i]['size']
+					mem = self.membanks[j]['capacity']
+
+					self.cap_used[j] += ds
+					if self.cap_used[j] > mem:
+						return False
 		return True
 
 	def cost(self, i, j):
