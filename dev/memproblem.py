@@ -55,7 +55,35 @@ class MemProblem():
 			if self.X[i][-1] == True:
 				cost += self.penalty * self.datastructs[i]['cost']
 		return cost
+	
+	# Check correctness of solution.
+	# Returns false if incorrect.
+	def is_correct(self):
+		#Check feasability of the solution.
+		for i in self.X:
+			trues = 0
+			for j in i:
+				if j == True:
+					trues += 1
+			if trues != 1:
+				return False
 
+		# We'll need to set the correct cap_used.
+		for i in range(len(self.cap_used)):
+			self.cap_used[i] = 0
+
+		# Ensure that each datastructure fits into its membank.
+		# Ensure that each membank is not overflowed.
+		for i in range(len(self.X)):
+			if self.X[i][j] == True:
+				ds = self.datastructs[i]['size']
+				mem = self.membanks[j]['capacity']
+				if (self.cap_used[j] -  mem) < ds:
+					return False
+				self.cap_used[j] += ds
+				if self.cap_used[j] > mem:
+					return False
+		return True
 
 	def cost(self, i, j):
 		cost = self.datastructs[i]['cost'] #Access cost of i
