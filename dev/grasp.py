@@ -37,8 +37,29 @@ def construct(problem, alpha):
 		problem.X[i][j] = True
 	problem.update_conflicts()
 
+def local(problem):
+	move = explore.explore_neighbourhood_n0(problem)
+	while move is not None:
+		problem.X[move['i']][move['h']] = False
+		problem.X[move['i']][move['j']] = True
+		problem.update_conflicts()
+		move = explore.explore_neighbourhood_n0(problem)
+
+
+def grasp(problem, alpha, maxiter):
+	cost = sys.maxint
+	best_solution = problem
+	for i in range(0, maxiter):
+		current_problem = problem.copy()
+		construct(current_problem, alpha)
+		local(current_problem)
+		current_cost = current_problem.calculate_cost()
+		if cost > current_cost:
+			cost = current_cost
+			best_solution = current_problem
+	return best_solution
+
+
 if __name__ == "__main__":
 	prob = memproblem.read_problem('test.dat')
-	construct(prob, 0)
-	prob.print_solution()
-	print explore.possible_moves(prob, 0)
+	grasp(prob, 1, 10).print_solution()
