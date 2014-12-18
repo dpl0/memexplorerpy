@@ -1,6 +1,6 @@
 import sys
 import memproblem
-import time
+import timeit
 from grasp import grasp
 
 
@@ -155,9 +155,16 @@ if __name__ == "__main__":
 			p_max=20).write_file('memex_big_problem_med_p.dat')
 
 	else:
+		iters = int(sys.argv[2])
+		problem = memproblem.read_problem(sys.argv[1])
 
-		filename = sys.argv[1]
-		problem = memproblem.read_problem(filename)
-		solution_grasp = grasp(problem, 1, 10)
-		solution_grasp.print_solution()
-		print solution_grasp.calculate_cost()
+		print "Executing grasp {iterations} times, printing results...".format(iterations=iters)
+
+		grasp_time = timeit.timeit('resultsFile.write("{result}".format(result=grasp(problem, 1, 100).results()))','''
+from grasp import grasp
+import memproblem
+
+problem = memproblem.read_problem(sys.argv[1])
+resultsFile = open("/home/obzzidian/results.data", "a")
+''', number=iters)
+		print "Average execution time: {time}".format(time=grasp_time/iters)

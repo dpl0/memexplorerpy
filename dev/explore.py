@@ -7,7 +7,7 @@ def possible_moves(problem):
 				remaining_capacity = problem.membanks[j]['capacity']
 				for ai in range(0, len(problem.datastructs)):
 					if problem.X[ai][j] == True:
-						remaining_capacity = problem.datastructs[ai]['size']
+						remaining_capacity -= problem.datastructs[ai]['size']
 				if remaining_capacity >= problem.datastructs[i]['size']:
 					possibles.append({'i': i, 'j': j, 'h': current[i]})
 	return possibles

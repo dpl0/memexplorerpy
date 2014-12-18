@@ -37,6 +37,21 @@ class MemProblem():
 		for row in self.X:
 			print row
 
+	def results(self):
+		return "{cost}, {usage}\n".format(cost=self.calculate_cost(), usage=self.print_usage())
+
+	def print_usage(self):
+		remaining_capacities_acc = 0;
+		capacity_acc = 0;
+		for j in range(0, len(self.membanks)-1):
+			remaining_capacity = 0
+			for ai in range(0, len(self.X)):
+				if self.X[ai][j] == True:
+					remaining_capacity += self.datastructs[ai]['size']
+				remaining_capacities_acc += remaining_capacity
+				capacity_acc += self.membanks[j]['capacity']
+		return float(remaining_capacities_acc)/float(capacity_acc)
+
 	def calculate_cost(self):
 		cost = 0
 		
