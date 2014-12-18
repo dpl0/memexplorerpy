@@ -70,7 +70,35 @@ class MemProblem():
 			if self.X[i][-1] == True:
 				cost += self.penalty * self.datastructs[i]['cost']
 		return cost
+	
+	# Check correctness of solution.
+	# Returns false if incorrect.
+	def is_correct(self):
+		#Check feasability of the solution.
+		for i in self.X:
+			trues = 0
+			for j in i:
+				if j == True:
+					trues += 1
+			if trues != 1:
+				return False
 
+		# We'll need to set the correct cap_used.
+		for i in range(len(self.cap_used)):
+			self.cap_used[i] = 0
+
+		# Ensure that each datastructure fits into its membank.
+		# Ensure that each membank is not overflowed.
+		for i in range(len(self.X)):
+			if self.X[i][j] == True:
+				ds = self.datastructs[i]['size']
+				mem = self.membanks[j]['capacity']
+				if (self.cap_used[j] -  mem) < ds:
+					return False
+				self.cap_used[j] += ds
+				if self.cap_used[j] > mem:
+					return False
+		return True
 
 	def cost(self, i, j):
 		cost = self.datastructs[i]['cost'] #Access cost of i
@@ -171,14 +199,6 @@ class MemProblem():
 			problem.X[row] = list(self.X[row])
 		problem.update_conflicts()
 		return problem
- 
-# s = [60, 40, 45, 35, 40, 50, 45, 55, 50, 40, 25, 56, 73, 53, 42, 88];
-# c = [80, 80, 80, 80];
-# e = [6, 4, 4, 3, 4, 5, 4, 5, 5, 4, 2, 5, 7, 5, 4, 8];
-# d = [4, 4, 6, 4, 6, 6, 6, 4, 2, 4, 6, 6, 6, 4, 2, 4];
- 
-# A = [14, 9, 3, 7, 1, 3, 5, 7, 3, 10, 4, 5, 14, 16, 10, 8];
-# B = [8, 1, 5, 2, 2, 4, 6, 2, 3, 1, 6, 13, 15, 1, 10, 2];
 
 	# Create a random problem.
 def read_problem(filename):
