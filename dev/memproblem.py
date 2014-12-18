@@ -22,6 +22,9 @@ class MemProblem():
 		self.X = []
 		for i in range(0, len(self.datastructs)):
 			self.X.append([False] * len(self.membanks))
+		# Include external memory.
+		for i in range(0, self.membanks_n + 1):
+			self.cap_used.append(0)
 	
 	# Print solution
 	def print_problem(self):
@@ -34,7 +37,6 @@ class MemProblem():
 		for row in self.X:
 			print row
 
-	# XXX We still need to check it
 	def calculate_cost(self):
 		cost = 0
 		
