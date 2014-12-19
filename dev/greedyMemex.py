@@ -11,7 +11,7 @@ import random
 import sys
 import memproblem
 
-def greedyMemex(p):
+def greedymemex(p):
     f = 0 # total cost in allocation
     g = 0
     a = random.sample(range(0,p.datastructs_n), p.datastructs_n)
@@ -37,5 +37,5 @@ def greedyMemex(p):
 
 if __name__ == '__main__':
     problem = memproblem.read_problem("./test.dat")
-    cost = greedyMemex(problem)
+    cost = greedymemex(problem)
     print(cost)

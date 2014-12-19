@@ -8,7 +8,7 @@ import random
 import sys
 import memproblem
 
-def randomMememex(p):
+def randommemex(p):
 	cost = 0
 	for i in range(0, p.datastructs_n):
 		j = 0
@@ -21,9 +21,11 @@ def randomMememex(p):
 		cost += p.calculate_cost()
 	return cost
 
+
+
 if __name__ == '__main__':
-	# [number, maximum]
-	# seed, datastructs, membanks, conflicts 
-	problem = memproblem.read_problem("./test.dat")
-	cost = randomMememex(problem)
-	print(cost)
+    # [number, maximum]
+    # seed, datastructs, membanks, conflicts 
+    problem = memproblem.read_problem("./test.dat")
+    cost = randommemex(problem)
+    print(cost)
