@@ -37,6 +37,21 @@ class MemProblem():
 		for row in self.X:
 			print row
 
+	def results(self):
+		return "{cost}, {usage}\n".format(cost=self.calculate_cost(), usage=self.print_usage())
+
+	def print_usage(self):
+		remaining_capacities_acc = 0;
+		capacity_acc = 0;
+		for j in range(0, len(self.membanks)-1):
+			remaining_capacity = 0
+			for ai in range(0, len(self.X)):
+				if self.X[ai][j] == True:
+					remaining_capacity += self.datastructs[ai]['size']
+				remaining_capacities_acc += remaining_capacity
+				capacity_acc += self.membanks[j]['capacity']
+		return float(remaining_capacities_acc)/float(capacity_acc)
+
 	def calculate_cost(self):
 		cost = 0
 		
@@ -55,7 +70,35 @@ class MemProblem():
 			if self.X[i][-1] == True:
 				cost += self.penalty * self.datastructs[i]['cost']
 		return cost
+	
+	# Check correctness of solution.
+	# Returns false if incorrect.
+	def is_correct(self):
+		#Check feasability of the solution.
+		for i in self.X:
+			trues = 0
+			for j in i:
+				if j == True:
+					trues += 1
+			if trues != 1:
+				return False
 
+		# We'll need to set the correct cap_used.
+		for i in range(len(self.cap_used)):
+			self.cap_used[i] = 0
+
+		# Ensure that each datastructure fits into its membank.
+		# Ensure that each membank is not overflowed.
+		for i in range(len(self.X)):
+			for j in range(len(self.X[i])):
+				if self.X[i][j] == True:
+					ds = self.datastructs[i]['size']
+					mem = self.membanks[j]['capacity']
+
+					self.cap_used[j] += ds
+					if self.cap_used[j] > mem:
+						return False
+		return True
 
 	def cost(self, i, j):
 		cost = self.datastructs[i]['cost'] #Access cost of i
@@ -150,15 +193,12 @@ class MemProblem():
 			f.write('{b}, '.format(b=conflict['b']))
 		f.write('{b}];\n'.format(b=self.conflicts[-1]['b']))
 
-
- 
-# s = [60, 40, 45, 35, 40, 50, 45, 55, 50, 40, 25, 56, 73, 53, 42, 88];
-# c = [80, 80, 80, 80];
-# e = [6, 4, 4, 3, 4, 5, 4, 5, 5, 4, 2, 5, 7, 5, 4, 8];
-# d = [4, 4, 6, 4, 6, 6, 6, 4, 2, 4, 6, 6, 6, 4, 2, 4];
- 
-# A = [14, 9, 3, 7, 1, 3, 5, 7, 3, 10, 4, 5, 14, 16, 10, 8];
-# B = [8, 1, 5, 2, 2, 4, 6, 2, 3, 1, 6, 13, 15, 1, 10, 2];
+	def copy(self):
+		problem = MemProblem(datastructs=list(self.datastructs), membanks=list(self.membanks[:-1]), conflicts=list(self.conflicts), penalty=self.penalty)
+		for row in range(0, len(self.X)):
+			problem.X[row] = list(self.X[row])
+		problem.update_conflicts()
+		return problem
 
 	# Create a random problem.
 def read_problem(filename):
@@ -212,21 +252,3 @@ def random_problem(seed, dss_min, dss_max, dsc_min, dsc_max, ds_n, mem_min, mem_
 		}		
 
 	return MemProblem(datastructs=datastructs, membanks=membanks, conflicts=conflicts, penalty=penalty)
-
-if __name__ == "__main__":
-	prob = random_problem(seed=2, 
-		dss_min=0, 
-		dss_max=3, 
-		dsc_min=0, 
-		dsc_max=5, 
-		ds_n=3, 
-		mem_min=0, 
-		mem_max=5, 
-		mem_n=4, 
-		c_min=0, 
-		c_max=1, 
-		c_n=8, 
-		p_min=3, 
-		p_max=4)
-
-	print prob.calculate_cost()
