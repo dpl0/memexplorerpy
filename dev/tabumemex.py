@@ -27,7 +27,6 @@ def initialmemex(p ,A ):
 
 def tabumemex(p, NtMax):
     """Solves the memory allocation problem using tabu search.
-    
     Keyword arguments:
     p -- memproblem object
     NtMax - number of iterations
@@ -56,13 +55,11 @@ def tabumemex(p, NtMax):
 
 def explore_neighborhood_0(p, tabList):
     """Explores the neighborhood of the current solution
-    
     Keyword arguments:
     X -- current solution to expand
     tabList -- current tabu list
     Returns a solution with a cost.
     """
-
     candidate = "" # candidate to add to the tabu list
     h = None # Current membank for datastruct i
     for i in range(len(p.X)):
@@ -101,7 +98,8 @@ def fillTabuList(X, tabList):
     pass
 
 if __name__ == '__main__':
-    problem = memproblem.read_problem("./test.dat")
+    
     for i in range(1,20):
+        problem = memproblem.read_problem("./test.dat")
         cost = tabumemex(problem, 100)
         print(cost)
