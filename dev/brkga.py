@@ -10,7 +10,6 @@ from math import floor
 # 7 - Generate mutant solutions.
 # 8 - Crossover
 # 9 - Goto 2
-
 class brkga:
 	n = 0
 	p = 0
