@@ -1,0 +1,3 @@
+File name format:
+
+datastructNumber_membankNumber_conflictNumber.dat

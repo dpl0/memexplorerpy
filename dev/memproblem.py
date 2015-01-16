@@ -5,28 +5,8 @@ import re
 # Class containing the whole problem set.
 # We can set up the maximum number of elements, and its maximum value.
 class MemProblem():
-	# [capacitu].
-	membanks_n = 0
-	membanks = [0] + [sys.maxint]
-
-	# [[capacity required, access cost]].
-	datastructs_max = 0
-	datastructs = []
-
-	# [a, b, cost, conflict status].
-	# Status can be any of: {0, 1, penalty, 2*penalty}.
-	conflicts_max = 0
-	conflicts_n = 0
-	conflicts = []
-
-	# Set by the user.
-	penalty = -1
-	# List that contains the capacity used for each mem bank (optimization).
 	cap_used = []
-	# Bool that is true if the datastruct is in the membank.
-	# [membank][datastruct]
-	X = []
-
+	
 	# Class needs the number of datastructs, membanks, and conflicts.
 	def __init__(self, datastructs, membanks, conflicts, penalty):
 		self.datastructs_n = len(datastructs)  
@@ -39,7 +19,12 @@ class MemProblem():
 		self.penalty = penalty
 		self.membanks.append({'capacity': sys.maxint})
 
-		self.X = [[False] * len(self.membanks)] * len(self.datastructs)
+		self.X = []
+		for i in range(0, len(self.datastructs)):
+			self.X.append([False] * len(self.membanks))
+		# Include external memory.
+		for i in range(0, self.membanks_n + 1):
+			self.cap_used.append(0)
 	
 	# Print solution
 	def print_problem(self):
@@ -52,37 +37,83 @@ class MemProblem():
 		for row in self.X:
 			print row
 
-	# XXX We still need to check it
+	def results(self):
+		return "{cost}, {usage}\n".format(cost=self.calculate_cost(), usage=self.print_usage())
+
+	def print_usage(self):
+		remaining_capacities_acc = 0;
+		capacity_acc = 0;
+		for j in range(0, len(self.membanks)-1):
+			remaining_capacity = 0
+			for ai in range(0, len(self.X)):
+				if self.X[ai][j] == True:
+					remaining_capacity += self.datastructs[ai]['size']
+				remaining_capacities_acc += remaining_capacity
+				capacity_acc += self.membanks[j]['capacity']
+		return float(remaining_capacities_acc)/float(capacity_acc)
+
 	def calculate_cost(self):
 		cost = 0
+		
 		# Data structs cost
-		for i in range(0, len(datastructs)):
-			for j in range(0, len(X)-2):
-				if X[j][i] == True:
-					cost += datastructs[i][1]
+		for i in range(0, len(self.datastructs)):
+			for j in range(0, len(self.membanks)-1):
+				if self.X[i][j] == True:
+					cost += self.datastructs[i]['cost']
+		
 		# Conflicts cost
 		for conf in self.conflicts:
-			cost = cost + conf[0] * conf[1]
+			cost = cost + conf['cost'] * conf['status']
+		
 		# External storage cost
-		for i in range(0, len(X[-1])):
-			if X[-1][i] == True:
-				cost += penalty * datastructs[i]
+		for i in range(0, len(self.X)):
+			if self.X[i][-1] == True:
+				cost += self.penalty * self.datastructs[i]['cost']
 		return cost
+	
+	# Check correctness of solution.
+	# Returns false if incorrect.
+	def is_correct(self):
+		#Check feasability of the solution.
+		for i in self.X:
+			trues = 0
+			for j in i:
+				if j == True:
+					trues += 1
+			if trues != 1:
+				return False
+
+		# We'll need to set the correct cap_used.
+		for i in range(len(self.cap_used)):
+			self.cap_used[i] = 0
+
+		# Ensure that each datastructure fits into its membank.
+		# Ensure that each membank is not overflowed.
+		for i in range(len(self.X)):
+			for j in range(len(self.X[i])):
+				if self.X[i][j] == True:
+					ds = self.datastructs[i]['size']
+					mem = self.membanks[j]['capacity']
+
+					self.cap_used[j] += ds
+					if self.cap_used[j] > mem:
+						return False
+		return True
 
 	def cost(self, i, j):
-		cost = self.datastructs[i][1] #Access cost of i
-		if j == self.membanks_n+1:
-			cost *= penalty
+		cost = self.datastructs[i]['cost'] #Access cost of i
+		if j == len(self.membanks)-1:
+			cost = cost*self.penalty
 
 		for conflict in self.conflicts:
 			
 			if conflict['a'] == i or conflict['b'] == i:
-				if X[i][j] == True:
-					cost += self.conflict_status(conflict) * conflict['cost']
+				if self.X[i][j] == True:
+					cost += conflict['cost'] * self.conflict_status(conflict) * conflict['cost']
 				else:
-					X[i][j] = False
-					cost += self.conflict_status(conflict) * conflict['cost']
-					X[i][j] = False
+					self.X[i][j] = True
+					cost += conflict['cost'] * self.conflict_status(conflict) * conflict['cost']
+					self.X[i][j] = False
 
 		return cost
 
@@ -92,23 +123,29 @@ class MemProblem():
 				return j
 		return None
 
+	def update_conflicts(self):
+		for conflict in self.conflicts:
+			conflict['status'] = self.conflict_status(conflict)
+
 	def conflict_status(self, conflict):
 		cost = 0
-		a = self.conflicts['a']
-		b = self.conflicts['b']
+		a = conflict['a']
+		b = conflict['b']
 		j1 = self.whereis(a)
 		j2 = self.whereis(b)
 
+		
 		if j1 == None or j2 == None:
 			return 0
 
 		elif j1 == j2:
-			if j1 == self.membanks_n+1 and j2 == self.membanks_n+1 :
+
+			if j1 == len(self.membanks)-1 and j2 == len(self.membanks)-1:
 				return self.penalty*2
 			else:
 				return 1
 
-		elif j1 == self.membanks_n+1 or j2 == self.membanks_n+1:
+		elif j1 == len(self.membanks)-1 or j2 == len(self.membanks)-1:
 			return self.penalty
 
 		return 0
@@ -156,18 +193,15 @@ class MemProblem():
 			f.write('{b}, '.format(b=conflict['b']))
 		f.write('{b}];\n'.format(b=self.conflicts[-1]['b']))
 
-
- 
-# s = [60, 40, 45, 35, 40, 50, 45, 55, 50, 40, 25, 56, 73, 53, 42, 88];
-# c = [80, 80, 80, 80];
-# e = [6, 4, 4, 3, 4, 5, 4, 5, 5, 4, 2, 5, 7, 5, 4, 8];
-# d = [4, 4, 6, 4, 6, 6, 6, 4, 2, 4, 6, 6, 6, 4, 2, 4];
- 
-# A = [14, 9, 3, 7, 1, 3, 5, 7, 3, 10, 4, 5, 14, 16, 10, 8];
-# B = [8, 1, 5, 2, 2, 4, 6, 2, 3, 1, 6, 13, 15, 1, 10, 2];
+	def copy(self):
+		problem = MemProblem(datastructs=list(self.datastructs), membanks=list(self.membanks[:-1]), conflicts=list(self.conflicts), penalty=self.penalty)
+		for row in range(0, len(self.X)):
+			problem.X[row] = list(self.X[row])
+		problem.update_conflicts()
+		return problem
 
 	# Create a random problem.
-def read(filename):
+def read_problem(filename):
 	data = open(filename, 'r').read()
 	s = [int(numeric_string) for numeric_string in re.search('s = \[((?:\d+,\s*)*\d+)\];', data).group(1).replace(' ', '').split(',')]
 	d = [int(numeric_string) for numeric_string in re.search('d = \[((?:\d+,\s*)*\d+)\];', data).group(1).replace(' ', '').split(',')]
@@ -211,29 +245,10 @@ def random_problem(seed, dss_min, dss_max, dsc_min, dsc_max, ds_n, mem_min, mem_
 	conflicts = [0] * c_n
 	for i in range(0, c_n):
 		conflicts[i] = {
-			'a': random.randint(0, ds_n), 
-			'b': random.randint(0, ds_n),
+			'a': random.randint(0, ds_n-1), 
+			'b': random.randint(0, ds_n-1),
 			'cost': random.randint(c_min, c_max),
 			'status': 0
 		}		
 
 	return MemProblem(datastructs=datastructs, membanks=membanks, conflicts=conflicts, penalty=penalty)
-
-if __name__ == "__main__":
-	prob = random_problem(seed=2, 
-		dss_min=0, 
-		dss_max=3, 
-		dsc_min=0, 
-		dsc_max=5, 
-		ds_n=3, 
-		mem_min=0, 
-		mem_max=5, 
-		mem_n=4, 
-		c_min=0, 
-		c_max=1, 
-		c_n=8, 
-		p_min=3, 
-		p_max=4)
-	prob.write_file("test.dat")
-	prob.print_problem();
-	read("test.dat").print_problem()
