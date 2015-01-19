@@ -67,4 +67,4 @@ def grasp(problem, alpha, maxiter):
 
 if __name__ == "__main__":
 	prob = memproblem.read_problem(sys.argv[1])
-	grasp(prob, 1, 10).print_solution()
+	print grasp(prob, 1, 10)
