@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 import memproblem
 import sys
 import random
@@ -65,5 +66,5 @@ def grasp(problem, alpha, maxiter):
 
 
 if __name__ == "__main__":
-	prob = memproblem.read_problem('test.dat')
+	prob = memproblem.read_problem(sys.argv[1])
 	grasp(prob, 1, 10).print_solution()

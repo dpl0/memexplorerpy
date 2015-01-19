@@ -1,5 +1,6 @@
-import memproblem, random, time
-from math import floor
+#!/usr/bin/env python2
+import random, sys, time
+import memproblem
 
 # 1 - Generate p chromosomes of solution.
 # 2 - Decode them and test fitness.
@@ -194,3 +195,12 @@ def do_brkga(problem, n):
 
 
 # Problem object is needed by the decoder.
+problem = memproblem.read_problem("./test.dat")
+
+if __name__ == "__main__":
+	brkgasolver = brkga(dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
+	generations = 1500
+
+	for i in range(generations):
+		brkgasolver.evolve()
+	print brkgasolver.bestSolution()

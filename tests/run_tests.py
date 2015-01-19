@@ -18,8 +18,13 @@ problem = memproblem.read_problem(sys.argv[1])
 
 	elif mh == 'tabu':
 		command = None
-		code = None
-		return command, code
+		code = """
+for i in range(1,20):
+	problem = memproblem.read_problem("./test.dat")
+	cost = tabumemex(problem, 100)
+	print(cost)
+	return command, code
+"""
 
 	elif mh == 'brkga':
 		command = "print brk.bestSolution(problem,1,"+str(iters)+").results"
@@ -77,7 +82,7 @@ if __name__ == "__main__":
 	executor = execute(problem, iters)
 	
 	executor.run_grasp()
-	#executor.run_tabu()
+	executor.run_tabu()
 	param = {'n':problem.datastructs_n,
 			'p':20, 's':time.time(),
 			'dec':brkga.decoder}
