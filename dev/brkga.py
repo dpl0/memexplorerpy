@@ -194,10 +194,10 @@ def do_brkga(problem, n):
 	print brkgasolver.bestSolution()
 
 
-# Problem object is needed by the decoder.
-problem = memproblem.read_problem("./test.dat")
 
 if __name__ == "__main__":
+	# Problem object is needed by the decoder.
+	problem = memproblem.read_problem(sys.argv[1])
 	brkgasolver = brkga(dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
 	generations = 1500
 
