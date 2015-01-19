@@ -7,7 +7,7 @@ import brkga, grasp, memproblem, tabumemex
 def get_code(mh, iters, pars):
 	"""Creates code templates using parameters."""
 	if mh == 'grasp':
-		command = "print grasp(problem,1,"+str(iters)+").results"
+		command = "print grasp(problem,1,"+str(iters)+")"
 		code = """ 
 import memproblem
 from grasp import grasp

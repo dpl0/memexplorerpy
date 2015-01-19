@@ -10,7 +10,6 @@ from math import floor
 # 7 - Generate mutant solutions.
 # 8 - Crossover
 # 9 - Goto 2
-
 class brkga:
 	n = 0
 	p = 0
@@ -195,13 +194,3 @@ def do_brkga(problem, n):
 
 
 # Problem object is needed by the decoder.
-problem = memproblem.read_problem("./test.dat")
-
-if __name__ == "__main__":
-	brkgasolver = brkga(dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
-	generations = 1500
-
-	for i in range(generations):
-		brkgasolver.evolve()
-	print brkgasolver.bestSolution()
-
