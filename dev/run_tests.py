@@ -12,13 +12,19 @@ def get_code(mh, filename, iters, pars):
 import memproblem
 from grasp import grasp
 
-problem = memproblem.read_problem(sys.argv[1])
+problem = memproblem.read_problem('"""+filename+"""')
 """
 		return command, code
 
 	elif mh == 'tabu':
-		command = None
-		code = None
+		command = "print cost"
+		code = """
+import memproblem
+import tabumemex
+
+problem = memproblem.read_problem('"""+filename+"""')
+cost = tabumemex.tabumemex(problem, 100)
+"""
 		return command, code
 
 	elif mh == 'brkga':
@@ -27,10 +33,11 @@ problem = memproblem.read_problem(sys.argv[1])
 		code = """
 import memproblem, brkga
 
-problem = memproblem.read_problem(sys.argv[1])
+problem = memproblem.read_problem('"""+filename+"""')
 brkgasolver = brkga.brkga(n=problem.datastructs_n, p=20, s=time.time(), dec=brkga.decoder)
 for i in range("""+str(iters)+"""):
-	brkgasolver.evolve()"""
+	brkgasolver.evolve()
+"""
 		return command, code
 
 	else:
@@ -44,41 +51,39 @@ class execute():
 		self.repeats = 4
 		return
 	
-	def run_grasp(self, pars=None):
+	def run_grasp(self, filename, pars=None):
 		print("GRASP ("+str(self.iters)+")")
 
-		command, code = get_code('grasp', self.iters, pars)
+		command, code = get_code('grasp', filename, self.iters, pars)
 
 		grasp_time = timeit.timeit(command, code, number=self.repeats)
 		print("Avg execution time: "+str(grasp_time/self.repeats))
 		return
 	
-	def run_tabu(self, pars=None):
+	def run_tabu(self, filename, pars=None):
 		print("Tabu Search ("+str(self.iters)+")")
 
-		command, code = get_code('tabu', self.iters, pars)
+		command, code = get_code('tabu', filename, self.iters, pars)
 		tabu_time = timeit.timeit(command, code, number=self.repeats)
-		print("Avg execution time: "+str(grasp_time/self.repeats))
+		print("Avg execution time: "+str(tabu_time/self.repeats))
 		return
 	
-	def run_brkga(self, pars=None):
+	def run_brkga(self, filename, pars=None):
 		print("BRKGA ("+str(self.iters)+")")
 
-		command, code = get_code('grasp', self.iters, pars)
+		command, code = get_code('grasp', filename, self.iters, pars)
 		brkga_time = timeit.timeit(command, code, number=self.repeats)
-		print("Avg execution time: "+str(grasp_time/self.repeats))
+		print("Avg execution time: "+str(brkga_time/self.repeats))
 		return
 
 
 if __name__ == "__main__":
-	problem = memproblem.read_problem(sys.argv[1])
+	fname = sys.argv[1]
+	problem = memproblem.read_problem(fname)
 	# Iters: iterations for GRASP, tabu memex, brkga. 
 	iters = int(sys.argv[2])
 	executor = execute(problem, iters)
 	
-	executor.run_grasp()
-	#executor.run_tabu()
-	param = {'n':problem.datastructs_n,
-			'p':20, 's':time.time(),
-			'dec':brkga.decoder}
-	executor.run_brkga(param)
+	executor.run_grasp(fname)
+	executor.run_tabu(fname)
+	executor.run_brkga(fname)
