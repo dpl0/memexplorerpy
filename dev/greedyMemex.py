@@ -20,8 +20,8 @@ def greedymemex(p):
     for i in range(0, p.datastructs_n):
         b = 0 # save best j for i
         h= sys.float_info.max
-        for j in range(1,p.membanks_n+1):
-            if p.cap_used[i] + p.datastructs[a[i]]['size'] < p.membanks[j]['capacity']:
+        for j in range(0,p.membanks_n):
+            if p.cap_used[j] + p.datastructs[a[i]]['size'] < p.membanks[j]['capacity']:
                 g[i][j] = p.cost(i,j)#cost of allocating this datastruct
                 if g[i][j] < h:
                    b = j
