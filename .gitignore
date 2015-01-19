@@ -1,1 +1,15 @@
 dev/*.pyc
+
+*.pbxproj
+
+*.plist
+
+*.xcscheme
+
+*.xcuserstate
+
+*.xccheckout
+
+*.xcworkspacedata
+
+*.pbxproj
