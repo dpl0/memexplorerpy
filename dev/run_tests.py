@@ -38,6 +38,8 @@ s = time.time()
 brkgasolver = brkga.brkga(problem, brkga.decoder, n, 20, s)
 for i in range("""+str(iters)+"""):
 	brkgasolver.evolve()
+	if i % 50 == 0:
+		print brkgasolver.bestSolution()[0]
 """
 	return command, code
 
