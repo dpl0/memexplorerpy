@@ -27,7 +27,7 @@ class brkga:
 	# pe: Percent of elite items into each population.
 	# pm: Percent of mutants introduced at each generation into the population.
 	# rhoe: Probability that an offspring inherits the allele of its elite parent.
-	def __init__(self, dec, n=100, p=1000, pe=0.20, pm=0.10, rhoe=0.70, s=0):
+	def __init__(self, pr, dec, n, p, s):
 		# Creates the whole set of population.
 		def create_population():
 			"""Create the whole population."""
@@ -40,9 +40,10 @@ class brkga:
 
 		self.n = n
 		self.p = p
-		self.pe = pe
-		self.pm = pm 
-		self.rhoe =rhoe 
+		self.pe = 0.2 
+		self.pm = 0.1 
+		self.rhoe = 0.7
+		self.problem = pr
 		random.seed(s)
 	
 		# The decoder creates a solution using the chromosome.
@@ -58,7 +59,7 @@ class brkga:
 
 	def rank(self, chromosomes):
 		"""Decode and evaluate the cost of the current population."""
-		return sorted([(self.decoder(ch), ch) for ch in chromosomes])
+		return sorted([(self.decoder(ch, self.problem), ch) for ch in chromosomes])
 
 	def evolve(self):
 		"""Improves the current solutions."""
@@ -111,13 +112,13 @@ class brkga:
 				if random.random() <= self.rhoe:
 					newelem.append(elite[ei][1][j])
 				else: newelem.append(nonelite[ni][1][j])
-			ret.append( (self.decoder(newelem), newelem) )
+			ret.append( (self.decoder(newelem, self.problem), newelem) )
 		return ret
 
 	def bestSolution(self):
 		return self.current[0]
 
-def decoder(ch):
+def decoder(ch, problem):
 	"""Creates a solution greedily, and returns the fitness of the chromosome."""
 
 	def find_conflicting_ds(i):
@@ -188,7 +189,7 @@ def decoder(ch):
 # Testing function.
 def do_brkga(problem, n):
 	problem = memproblem.read_problem(problem)
-	brkgasolver = brkga(dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
+	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
 	for i in range(n):
 		brkgasolver.evolve()
 	print brkgasolver.bestSolution()
@@ -198,8 +199,8 @@ def do_brkga(problem, n):
 if __name__ == "__main__":
 	# Problem object is needed by the decoder.
 	problem = memproblem.read_problem(sys.argv[1])
-	brkgasolver = brkga(dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
-	generations = 1500
+	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
+	generations = 100
 
 	for i in range(generations):
 		brkgasolver.evolve()
