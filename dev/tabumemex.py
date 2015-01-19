@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # Data:
 #	DataStructure = {'size', 'pos'}
 #	MemoryBank = {'capacity', 'pos'}
