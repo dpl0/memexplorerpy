@@ -26,6 +26,6 @@ def randommemex(p):
 if __name__ == '__main__':
     # [number, maximum]
     # seed, datastructs, membanks, conflicts 
-    problem = memproblem.read_problem("./test.dat")
+    problem = memproblem.read_problem(sys.argv[1])
     cost = randommemex(problem)
     print(cost)
