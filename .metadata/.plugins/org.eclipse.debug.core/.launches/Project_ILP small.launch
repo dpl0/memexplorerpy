@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><launchConfiguration type="opl.launchType">
+<stringAttribute key="opl.debugModel.ATTR_ELEMENT_ID" value="=P\roject_ILPR\Run Con\figu\rationsrsmall"/>
+<stringAttribute key="opl.debugModel.ATTR_PROJECT" value="Project_ILP"/>
+<stringAttribute key="opl.debugModel.ATTR_RUN_CONFIG" value="small"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Project_ILP"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>

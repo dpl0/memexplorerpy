@@ -38,7 +38,7 @@ class MemProblem():
 			print row
 
 	def results(self):
-		return "{cost}, {usage}\n".format(cost=self.calculate_cost(), usage=self.print_usage())
+		return "{cost}, {usage}".format(cost=self.calculate_cost(), usage=self.print_usage())
 
 	def print_usage(self):
 		remaining_capacities_acc = 0;
@@ -194,10 +194,27 @@ class MemProblem():
 		f.write('{b}];\n'.format(b=self.conflicts[-1]['b']))
 
 	def copy(self):
-		problem = MemProblem(datastructs=list(self.datastructs), membanks=list(self.membanks[:-1]), conflicts=list(self.conflicts), penalty=self.penalty)
+		datastructs = []
+		membanks = []
+		conflicts = []
+		
+		for datastruct in self.datastructs:
+			datastructs.append({'size': datastruct['size'] ,'cost': datastruct['cost']})
+
+		for membank in self.membanks:
+			membanks.append({'capacity': membank['capacity']})
+
+		for conflict in self.conflicts:
+			conflicts.append({'a': conflict['a'] ,'b': conflict['b'], 'cost': conflict['cost'], 'status': conflict['status']})
+
+		membanks.pop()
+
+		problem = MemProblem(datastructs=datastructs, membanks=membanks, conflicts=conflicts, penalty=self.penalty)
+		
 		for row in range(0, len(self.X)):
 			problem.X[row] = list(self.X[row])
 		problem.update_conflicts()
+		
 		return problem
 
 	# Create a random problem.

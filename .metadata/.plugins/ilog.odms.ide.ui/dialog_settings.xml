@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="IloNewRunConfigWizard">
+		<item value="false" key="IloNewRunConfigWizard.STORE_SET_AS_DEFAULT"/>
+	</section>
+</section>

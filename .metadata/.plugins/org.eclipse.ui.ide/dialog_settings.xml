@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item value="" key="IloExternalProjectImportWizard.STORE_ROOT_ARCHIVE"/>
+		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
+		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+		<item value="/home/obzzidian/Projects/AMMM" key="IloExternalProjectImportWizard.STORE_ROOT_DIRECTORY"/>
+	</section>
+	<section name="NewWizardAction">
+	</section>
+</section>

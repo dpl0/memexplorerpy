@@ -47,6 +47,7 @@ def local(problem):
 
 
 def grasp(problem, alpha, maxiter):
+	solutions = []
 	cost = sys.maxint
 	best_solution = problem
 	for i in range(0, maxiter):
@@ -57,7 +58,10 @@ def grasp(problem, alpha, maxiter):
 		if cost > current_cost:
 			cost = current_cost
 			best_solution = current_problem
-	return best_solution
+		if i%50 == 0:
+			solutions.append(cost);
+	solutions.append(cost)
+	return solutions
 
 
 if __name__ == "__main__":
