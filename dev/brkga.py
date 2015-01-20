@@ -48,10 +48,6 @@ class brkga:
 		# It returns the rank of the solution.
 		self.decoder = dec 
 		self.current = self.rank(create_population())
-		print "Original generation"
-		for i in self.current:
-			print i[0]
-		print
 		# Create copy
 		self.previous = list(self.current)
 		assert len(self.previous) == len(self.current) == self.p
@@ -103,10 +99,6 @@ class brkga:
 
 		self.previous = list(self.current)
 		self.current = sorted(elite + crossover + mutants)
-		print "generation"
-		for i in self.current:
-			print i[0]
-		print
 
 		# Ensure decent length.
 		if len(self.current) > self.p:
@@ -163,15 +155,11 @@ def do_brkga(filename, iters, p):
 	problem = memproblem.read_problem(filename)
 	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
 
-	ret = []
 	for i in range(iters):
-		if i % 50 == 0:
-			ret.append(brkgasolver.bestSolution()[0])
 		brkgasolver.evolve()
-	ret.append(brkgasolver.bestSolution()[0])
 	del brkgasolver, problem
-	return ret
+	return brkgasolver.bestSolution()
 
 
 if __name__ == "__main__":
-	print do_brkga(sys.argv[2], int(sys.argv[1]), 200)
+	print do_brkga(sys.argv[2], int(sys.argv[1]), 20)

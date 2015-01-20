@@ -105,6 +105,6 @@ if __name__ == "__main__":
 		executor.run_grasp(fname, problem)
 		executor.run_grasp2(fname, problem)
 		executor.run_grasp3(fname, problem)
-		executor.run_tabu(fname, problem)
+		#executor.run_tabu(fname, problem)
 		#executor.run_brkga(fname, problem)
 		print 
