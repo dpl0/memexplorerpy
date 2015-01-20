@@ -1,3 +1,6 @@
+import random
+
+
 def possible_moves(problem):
 	current = current_state(problem)
 	possibles = []
@@ -25,6 +28,11 @@ def possible_moves_break(problem):
 def possible_moves_fix(problem, h):
 	current = current_state(problem)
 	possibles = []
+	broken_cap = 0
+	for i in range(0, len(problem.datastructs)):
+		if problem.X[i][h] == True:
+			broken_cap += problem.datastructs[i]['size']
+
 	for i in range(0, len(problem.datastructs)):
 		if problem.X[i][h] == True:
 			for j in range(0, len(problem.membanks)):
@@ -33,7 +41,9 @@ def possible_moves_fix(problem, h):
 					for ai in range(0, len(problem.datastructs)):
 						if problem.X[ai][j] == True:
 							remaining_capacity -= problem.datastructs[ai]['size']
-					if remaining_capacity >= problem.datastructs[i]['size']:
+
+					fixed_cap = broken_cap - problem.datastructs[i]['size']
+					if remaining_capacity >= problem.datastructs[i]['size'] and fixed_cap <= problem.membanks[h]['capacity']:
 						possibles.append({'i': i, 'j': j, 'h': current[i]})
 	return possibles
 
@@ -63,8 +73,8 @@ def best_move(problem, possibles):
 def find_broken(problem):
 	#Find broken j
 	for j in range(0, len(problem.membanks)):
+		remaining_capacity = problem.membanks[j]['capacity']
 		for i in range(0, len(problem.datastructs)):
-			remaining_capacity = problem.membanks[j]['capacity']
 			if problem.X[i][j] == True:
 				remaining_capacity -= problem.datastructs[i]['size']
 		if remaining_capacity < 0:
@@ -76,22 +86,36 @@ def repair(problem):
 	if j is not None:
 		return possible_moves_fix(problem, j)
 	else:
-		return possible_moves(problem)
+		return None
 
 def best_move_v2(problem, possibles, tabList):	
 
 	best = None
 	for move in possibles:
 		if not str(move['i'])+"-"+str(move['j']) in tabList:
-			if best is None: 
-				best = {'move': move, 'cost': problem.cost(move['i'], move['h'])}
-			else: 
-				original_cost = best['cost']
-				cost = problem.cost(move['i'], move['j'])
-				if cost < original_cost:
-					best = {'move': move, 'cost': cost }
+			if best is None: original_cost = problem.cost(move['i'], move['h'])
+			else: original_cost = best['cost']
+			cost = problem.cost(move['i'], move['j'])
+			if cost < original_cost:
+				best = {'move': move, 'cost': cost }
 	if best is not None:
 		tabList.append(str(best['move']['i'])+"-"+str(best['move']['j']))
+		return best['move']
+	else:
+		return None
+
+def best_move_v3(problem, possibles):
+
+	best = None
+	for move in possibles:
+		if best is None:
+			best = {'move': move, 'cost': problem.cost(move['i'], move['j'])}
+		else: 
+			original_cost = best['cost']
+			cost = problem.cost(move['i'], move['j'])
+			if cost < original_cost:
+				best = {'move': move, 'cost': cost }
+	if best is not None:
 		return best['move']
 	else:
 		return None
@@ -100,12 +124,30 @@ def explore_neighbourhood_n0(problem):
 	return best_move(problem, prune(problem, possible_moves(problem)))
 
 def explore_neighbourhood_n2(problem, tabList):
-	return best_move(problem, prune(problem, possible_moves(problem)))
+	move = best_move_v2(problem, prune(problem, possible_moves(problem)), tabList)
+	if move is None:
+		return None
 
-def explore_neighbourhood_n1(problem, tabList):
-	move = best_move_v2(problem, possible_moves_break(problem), tabList)
 	problem.X[move['i']][move['h']] = False
 	problem.X[move['i']][move['j']] = True
 	problem.update_conflicts()
 
-	return best_move_v2(problem, repair(problem), tabList)
+def explore_neighbourhood_n1(problem, tabList):
+	pos = [move for move in prune(problem, possible_moves_break(problem)) if not str(move['i'])+"-"+str(move['j']) in tabList]
+	move = pos[random.randint(0, len(pos)-1)] 
+	if move is None:
+		return None
+	problem.X[move['i']][move['h']] = False
+	problem.X[move['i']][move['j']] = True
+	problem.update_conflicts()
+
+	pos = repair(problem)
+	if pos is None:
+		return None
+	move = best_move_v3(problem, pos)
+	if move is None:
+		return None
+
+	problem.X[move['i']][move['h']] = False
+	problem.X[move['i']][move['j']] = True
+	problem.update_conflicts()

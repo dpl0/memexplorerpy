@@ -20,7 +20,7 @@ def tabumemex(p, NtMax):
     """
 
     p = p.copy()
-    grasp.construct(p, 1)
+    grasp.construct(p, 0)
     results = []
 
     tabList = []
@@ -35,15 +35,13 @@ def tabumemex(p, NtMax):
         else:
             move = explore.explore_neighbourhood_n2(p, tabList)
 
-        if move is not None:
-            p.X[move['i']][move['h']] = False
-            p.X[move['i']][move['j']] = True
-            p.update_conflicts()
-            if len(tabList) > 5:
-                tabList = tabList[1:-1]
+        if len(tabList) > 5:
+            tabList = tabList[1:-1]
 
-        iter += 1
         if iter % 50 == 0:
             results.append(p.calculate_cost())
+
+        iter += 1
+
     results.append(p.calculate_cost())
     return results
