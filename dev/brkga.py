@@ -191,9 +191,9 @@ def do_brkga(problem, n):
 
 if __name__ == "__main__":
 	# Problem object is needed by the decoder.
-	problem = memproblem.read_problem(sys.argv[1])
+	problem = memproblem.read_problem(sys.argv[2])
 	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
 
-	for i in range(100):
+	for i in range(int(sys.argv[1])):
 		brkgasolver.evolve()
 	print brkgasolver.bestSolution()[0]
