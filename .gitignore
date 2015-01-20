@@ -1,4 +1,15 @@
+dev/*.pyc
 
-*.pyc
+*.pbxproj
 
-*.pyc
+*.plist
+
+*.xcscheme
+
+*.xcuserstate
+
+*.xccheckout
+
+*.xcworkspacedata
+
+*.pbxproj

@@ -12,7 +12,7 @@ def randommemex(p):
 	cost = 0
 	for i in range(0, p.datastructs_n):
 		j = 0
-		while p.cap_used[i] + p.datastructs[i]['size'] > p.membanks[j]['capacity']:
+		while p.cap_used[j] + p.datastructs[i]['size'] > p.membanks[j]['capacity']:
 			j = random.randint(0, p.membanks_n)
 		p.X[i][j] = True
 		if j <= len(p.cap_used):
@@ -26,6 +26,6 @@ def randommemex(p):
 if __name__ == '__main__':
     # [number, maximum]
     # seed, datastructs, membanks, conflicts 
-    problem = memproblem.read_problem("./test.dat")
+    problem = memproblem.read_problem(sys.argv[1])
     cost = randommemex(problem)
     print(cost)
