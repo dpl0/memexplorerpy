@@ -31,11 +31,10 @@ class brkga:
 	def __init__(self, pr, dec, n, p, s):
 		def create_population():
 			"""Create the whole population."""
+			def create_chromosome():
+				"""Create a chromosome."""
+				return [rand.random() for i in range(self.n)]
 			return [create_chromosome() for i in range(self.p)]
-
-		def create_chromosome():
-			"""Create a chromosome."""
-			return [rand.random() for i in range(self.n)]
 
 		self.n = n
 		self.p = p
@@ -49,15 +48,19 @@ class brkga:
 		# It returns the rank of the solution.
 		self.decoder = dec 
 		self.current = self.rank(create_population())
+		print "Original generation"
+		for i in self.current:
+			print i[0]
+		print
 		# Create copy
 		self.previous = list(self.current)
 		assert len(self.previous) == len(self.current) == self.p
 		assert len(self.previous[0][1]) == len(self.current[0][1]) == self.n
-		return
+		return None
 
 	def rank(self, chromosomes):
 		"""Decode and evaluate the cost of the current population."""
-		return sorted([(self.decoder(ch, self.problem), ch) for ch in chromosomes])
+		return sorted([(self.decoder(ch, self.problem.copy()), ch) for ch in chromosomes])
 
 	def evolve(self):
 		"""Improves the current solutions."""
@@ -100,6 +103,10 @@ class brkga:
 
 		self.previous = list(self.current)
 		self.current = sorted(elite + crossover + mutants)
+		print "generation"
+		for i in self.current:
+			print i[0]
+		print
 
 		# Ensure decent length.
 		if len(self.current) > self.p:
@@ -113,28 +120,11 @@ class brkga:
 
 def decoder(ch, problem):
 	"""Creates a solution greedily, and returns the fitness of the chromosome."""
-
-	def find_conflicting_ds(i):
-		"""Returns a set containing the ds that are in conflict with index."""
-		conf_ds = set()
-		for c in problem.conflicts:
-			if c['a'] == i:
-				conf_ds.add(c['b'])
-			elif c['b'] == i:
-				conf_ds.add(c['a'])
-		# If we have a conflict with ourselves, since it hasn't been allocated
-		# yet, there's no problem at all.
-		return conf_ds
-
-	def find_forbidden_mb(i, conf_ds):
-		"""Find the membanks where ds can't be allocated without conflict."""
-		forbidden_mb = set()
-		for j in range(len(problem.X)):
-			if j in conf_ds:
-				for k in range(len(problem.X[i])):
-					if problem.X[i][k] == True:
-						forbidden_mb.add(k)
-		return forbidden_mb
+	def is_allocable(dsi, mbi):
+		"""Tries to allocate datastruct[i] into membank[j]."""
+		if problem.membanks[mbi]['capacity'] - problem.cap_used[mbi] >= problem.datastructs[dsi]['size']:
+			return True
+		return False
 
 	def allocate(dsi, mbi):
 		"""Tries to allocate datastruct[i] into membank[j]."""
@@ -162,38 +152,26 @@ def decoder(ch, problem):
 	
 	# Put each datastruct greedily using the index.
 	for i in queue:
-		ds = problem.datastructs[i]
-
-		# Find the conflicts where the ds can be found.
-		conflicting_ds = find_conflicting_ds(index)
-
-		# Find the places where the other datastructs have been already alloc'd.
-		forbidden_mb = find_forbidden_mb(i, conflicting_ds)
-
-		# Put it in the first place that it fits. If it doesn't fit anywhere,
-		# it will end up at external memory.
-		for j in range(len(problem.membanks)):
-			if j not in forbidden_mb:
-				if allocate(i, j):
-					break
+		allocable = [j for j in range(problem.membanks_n+1) if is_allocable(i, j)]
+		costs = [(problem.cost(i, j), j) for j in allocable]
+		assert allocate(i, min(costs)[1]) == True
 
 	return problem.calculate_cost()
 
 # Testing function.
-def do_brkga(problem, n):
-	problem = memproblem.read_problem(problem)
+def do_brkga(filename, iters, p):
+	problem = memproblem.read_problem(filename)
 	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
-	for i in range(n):
-		brkgasolver.evolve()
-	print brkgasolver.bestSolution()
 
+	ret = []
+	for i in range(iters):
+		if i % 50 == 0:
+			ret.append(brkgasolver.bestSolution()[0])
+		brkgasolver.evolve()
+	ret.append(brkgasolver.bestSolution()[0])
+	del brkgasolver, problem
+	return ret
 
 
 if __name__ == "__main__":
-	# Problem object is needed by the decoder.
-	problem = memproblem.read_problem(sys.argv[2])
-	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
-
-	for i in range(int(sys.argv[1])):
-		brkgasolver.evolve()
-	print brkgasolver.bestSolution()[0]
+	print do_brkga(sys.argv[2], int(sys.argv[1]), 200)
