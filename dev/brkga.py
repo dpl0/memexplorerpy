@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
-import random, sys, time
+import sys, time
 import memproblem
+import random as rand
 
 # 1 - Generate p chromosomes of solution.
 # 2 - Decode them and test fitness.
@@ -28,15 +29,13 @@ class brkga:
 	# pm: Percent of mutants introduced at each generation into the population.
 	# rhoe: Probability that an offspring inherits the allele of its elite parent.
 	def __init__(self, pr, dec, n, p, s):
-		# Creates the whole set of population.
 		def create_population():
 			"""Create the whole population."""
 			return [create_chromosome() for i in range(self.p)]
 
-		# Each chromosome is a list of random numbers.
 		def create_chromosome():
 			"""Create a chromosome."""
-			return [random.random() for i in range(self.n)]
+			return [rand.random() for i in range(self.n)]
 
 		self.n = n
 		self.p = p
@@ -44,12 +43,11 @@ class brkga:
 		self.pm = 0.1 
 		self.rhoe = 0.7
 		self.problem = pr
-		random.seed(s)
+		rand.seed(s)
 	
 		# The decoder creates a solution using the chromosome.
 		# It returns the rank of the solution.
 		self.decoder = dec 
-		
 		self.current = self.rank(create_population())
 		# Create copy
 		self.previous = list(self.current)
@@ -63,11 +61,42 @@ class brkga:
 
 	def evolve(self):
 		"""Improves the current solutions."""
-		elite, nonelite = self.getElite()
-		mutants = self.rank(self.make_mutants())
+		def getElite():
+			"""Get the best solutions."""
+			eltotake = int(self.p * self.pe)
+			elite = self.previous[:eltotake]
+			nonelite = self.previous[eltotake:]
+			return elite, nonelite
+
+		def make_mutants():
+			"""Creates set of mutants."""
+			def mutate(index):
+				"""Mutates the previous[index] chromosome."""
+				return [rand.random() if rand.random() <= 0.5 else v for v in self.previous[index][1]]
+
+			return [mutate(i) for i in range(self.p) if rand.random() < self.pm]
+
+		def crossover(elite, nonelite, elems):
+			"""Creates the new elements using an elite and a non-elite chromosome."""
+			ret = []
+			for i in range(elems):
+				ei = rand.randint(0, len(elite)-1)
+				ni = rand.randint(0, len(nonelite)-1)
+					
+				newelem = []
+				for j in range(self.n):
+					if rand.random() <= self.rhoe:
+						newelem.append(elite[ei][1][j])
+					else: newelem.append(nonelite[ni][1][j])
+				ret.append( (self.decoder(newelem, self.problem), newelem) )
+			return ret
+
+		# getElite returns ranked chromsomes.
+		elite, nonelite = getElite()
+		mutants = self.rank(make_mutants())
 
 		crossoverlen = self.p - len(elite) - len(mutants)
-		crossover = self.crossover(elite, nonelite, crossoverlen)
+		crossover = crossover(elite, nonelite, crossoverlen)
 
 		self.previous = list(self.current)
 		self.current = sorted(elite + crossover + mutants)
@@ -78,47 +107,6 @@ class brkga:
 		if len(self.previous) > self.p:
 			self.previous =  self.previous[:self.p]
 		return
-
-	def getElite(self):
-		"""Get the best solutions."""
-		eltotake = int(self.p * self.pe)
-		elite = self.previous[:eltotake]
-		nonelite = self.previous[eltotake:]
-		return elite, nonelite
-
-	# Mutate p% elements of pop at random.
-	def make_mutants(self):
-		"""Creates set of mutants."""
-		mutants = []
-		for i in range(self.n):
-			if random.random() < self.pm:
-				mutants.append(self.mutate(i))
-		return mutants
-
-	def mutate(self, index):
-		"""Mutates the previous[index] chromosome."""
-		ch = list()
-		for v in self.previous[index][1]:
-			if random.random() <= 0.5:
-				ch.append(random.random())
-			else:
-				ch.append(v)
-		return ch
-
-	def crossover(self, elite, nonelite, elems):
-		"""Creates the new elements using an elite and a non-elite chromosome."""
-		ret = []
-		for i in range(elems):
-			ei = random.randint(0, len(elite)-1)
-			ni = random.randint(0, len(nonelite)-1)
-				
-			newelem = []
-			for j in range(self.n):
-				if random.random() <= self.rhoe:
-					newelem.append(elite[ei][1][j])
-				else: newelem.append(nonelite[ni][1][j])
-			ret.append( (self.decoder(newelem, self.problem), newelem) )
-		return ret
 
 	def bestSolution(self):
 		return self.current[0]
@@ -205,8 +193,7 @@ if __name__ == "__main__":
 	# Problem object is needed by the decoder.
 	problem = memproblem.read_problem(sys.argv[1])
 	brkgasolver = brkga(problem, dec=decoder, n=problem.datastructs_n, p=20, s=time.time())
-	generations = 100
 
-	for i in range(generations):
+	for i in range(100):
 		brkgasolver.evolve()
-	print brkgasolver.bestSolution()
+	print brkgasolver.bestSolution()[0]
