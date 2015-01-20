@@ -58,7 +58,7 @@ class execute():
 
 		command, code = get_code('tabu', self.iters, pars)
 		tabu_time = timeit.timeit(command, code, number=self.repeats)
-		print("Avg execution time: "+str(grasp_time/self.repeats))
+		print("Avg execution time: "+str(tabu_time/self.repeats))
 		return
 	
 	def run_brkga(self, pars=None):
@@ -66,7 +66,7 @@ class execute():
 
 		command, code = get_code('grasp', self.iters, pars)
 		brkga_time = timeit.timeit(command, code, number=self.repeats)
-		print("Avg execution time: "+str(grasp_time/self.repeats))
+		print("Avg execution time: "+str(brkga_time/self.repeats))
 		return
 
 

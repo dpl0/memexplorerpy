@@ -529,3 +529,44 @@ org.osgi.framework.BundleException: The bundle "org.eclipse.equinox.ds_1.4.1.v20
 
 !ENTRY ilog.odms.ide.core 1 0 2015-01-19 16:17:29.506
 !MESSAGE ODM Bundle is OFF
+
+!ENTRY ilog.odms.ide.core 4 0 2015-01-19 19:39:09.651
+!MESSAGE Oplrun process is not responding, you must relaunch the Run Configuration.
+
+!ENTRY ilog.odms.ide.core 4 0 2015-01-19 19:39:11.158
+!MESSAGE Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused
+!STACK 0
+java.rmi.ConnectException: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:128)
+	at com.sun.jmx.remote.internal.PRef.invoke(Unknown Source)
+	at javax.management.remote.rmi.RMIConnectionImpl_Stub.close(Unknown Source)
+	at javax.management.remote.rmi.RMIConnector.close(RMIConnector.java:501)
+	at javax.management.remote.rmi.RMIConnector.close(RMIConnector.java:441)
+	at ilog.odms.ide.internal.core.run.remote.IloRemoteOplrunLauncher.close(IloRemoteOplrunLauncher.java:496)
+	at ilog.odms.ide.internal.core.run.remote.IloRemoteRunController.fireRunTerminated(IloRemoteRunController.java:167)
+	at ilog.odms.ide.internal.core.run.IloAbstractRunController.requestAbort(IloAbstractRunController.java:777)
+	at ilog.odms.ide.internal.core.run.IloAbstractRunController.terminate(IloAbstractRunController.java:844)
+	at ilog.odms.ide.internal.core.run.remote.IloRemoteRunController$1.handleDebugEvents(IloRemoteRunController.java:155)
+	at org.eclipse.debug.core.DebugPlugin$EventNotifier.run(DebugPlugin.java:1109)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.debug.core.DebugPlugin$EventNotifier.dispatch(DebugPlugin.java:1143)
+	at org.eclipse.debug.core.DebugPlugin$EventDispatchJob.run(DebugPlugin.java:407)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Caused by: java.net.ConnectException: Connection refused
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:358)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:219)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:201)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:616)
+	at java.net.Socket.connect(Socket.java:565)
+	at java.net.Socket.<init>(Socket.java:432)
+	at java.net.Socket.<init>(Socket.java:215)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:146)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 17 more
