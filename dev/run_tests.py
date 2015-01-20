@@ -16,7 +16,7 @@ problem = memproblem.read_problem('"""+filename+"""')
 	return command, code
 
 def get_tabu_code(filename, iters):
-	command = "print tabumemex.tabumemex(problem, 100)"
+	command = "print tabumemex.tabumemex(problem, "+str(iters)+")"
 	code = """
 import memproblem
 import tabumemex
