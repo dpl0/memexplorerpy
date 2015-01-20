@@ -97,8 +97,13 @@ class brkga:
 
 	def mutate(self, index):
 		"""Mutates the previous[index] chromosome."""
-		# v = value.
-		return [random.random() if random.random() <= 0.5 else v for v in  self.previous[index][1]]
+		ch = list()
+		for v in self.previous[index][1]:
+			if random.random() <= 0.5:
+				ch.append(random.random())
+			else:
+				ch.append(v)
+		return ch
 
 	def crossover(self, elite, nonelite, elems):
 		"""Creates the new elements using an elite and a non-elite chromosome."""
