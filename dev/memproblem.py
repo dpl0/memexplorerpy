@@ -25,7 +25,7 @@ class MemProblem():
 		# Include external memory.
 		for i in range(0, self.membanks_n + 1):
 			self.cap_used.append(0)
-	
+
 	# Print solution
 	def print_problem(self):
 		print self.datastructs
@@ -106,7 +106,6 @@ class MemProblem():
 			cost = cost*self.penalty
 
 		for conflict in self.conflicts:
-			
 			if conflict['a'] == i or conflict['b'] == i:
 				if self.X[i][j] == True:
 					cost += conflict['cost'] * self.conflict_status(conflict) * conflict['cost']
